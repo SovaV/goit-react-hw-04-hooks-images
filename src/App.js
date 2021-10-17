@@ -29,9 +29,11 @@ export default function App(params) {
       setStatus(Status.PENDING);
       setImages([]);
       setPage(1);
+      fetchImages();
+      return;
     }
     if (!text || !page) {
-      fetchImages(text, page);
+      return;
     }
   }, [text, page]);
 
@@ -39,7 +41,7 @@ export default function App(params) {
     imagesAPI
       .fetchImages(text, page)
       .then(images => {
-        setImages(prevState => [...prevState, ...images.hits]);
+        setImages([...images, ...images.hits]);
         setStatus(Status.PENDING);
         if (page !== 1) {
           window.scrollTo({
