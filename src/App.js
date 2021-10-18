@@ -15,7 +15,7 @@ const Status = {
   REJECTED: 'rejected', // відхилено
 };
 
-export default function App(params) {
+export default function App({name}) {
   const [text, setText] = useState('');
   const [page, setPage] = useState(1);
   const [images, setImages] = useState([]);
@@ -25,24 +25,15 @@ export default function App(params) {
   const [largeImageURL, setLargeImageURL] = useState('');
 
   useEffect(() => {
-    if (!text) {
-      setStatus(Status.PENDING);
-      setImages([]);
-      setPage(1);
-      fetchImages();
+    if (!name) {
       return;
     }
-    if (!text || !page) {
-      return;
-    }
-  }, [text, page]);
-
-  function fetchImages(text, page) {
+  
     imagesAPI
-      .fetchImages(text, page)
+    .fetchImages(text, page)
       .then(images => {
-        setImages([...images, ...images.hits]);
-        setStatus(Status.PENDING);
+        setImages(prevImg =>  ([...prevImg.images, ...images.hits]));
+        setStatus(Status.RESOLVED);
         if (page !== 1) {
           window.scrollTo({
             top: document.body.scrollHeight,
@@ -57,10 +48,14 @@ export default function App(params) {
         setError(error);
         setStatus(Status.REJECTED);
       });
-  }
-
-  const handleFormSubmit = text => {
+  
+ }, [text]);
+    const handleFormSubmit = text => {
+    if (text) {
+      return;
+    }
     setText(text);
+    setImages([]);
     setPage(1);
   };
   const openModal = e => {
@@ -73,13 +68,13 @@ export default function App(params) {
   const btnFetch = () => {
     setPage(+1);
   };
-  const resolvedImg = status === Status.RESOLVED && images.length > 11;
+  // const resolvedImg = status === Status.RESOLVED && images.length > 11;
   return (
     <Container>
       <Searchbar onSubmit={handleFormSubmit} />
       {status === Status.IDLE && <h2>Введи и будет чудо</h2>}
       {status === Status.REJECTED && <h1>{error.message}</h1>}
-      {resolvedImg && <ImageGallery images={images} openModal={openModal} />}
+      {images.length > 0 && <ImageGallery images={images} openModal={openModal} />}
       {status === Status.PENDING && <Spiner />}
       {images.length !== 0 && <Button onClick={btnFetch} />}
       {showModal && <Modal onClose={toggleModal} largeImageURL={largeImageURL} />}

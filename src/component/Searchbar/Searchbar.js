@@ -12,6 +12,7 @@ export default function Searchbar({ onSubmit }) {
 
     if (text.trim() === '') {
       alert('Введите имя картинки');
+      return
     }
     onSubmit(text);
     setText('');
