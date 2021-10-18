@@ -15,7 +15,7 @@ const Status = {
   REJECTED: 'rejected', // відхилено
 };
 
-export default function App({name}) {
+export default function App() {
   const [text, setText] = useState('');
   const [page, setPage] = useState(1);
   const [images, setImages] = useState([]);
@@ -25,14 +25,16 @@ export default function App({name}) {
   const [largeImageURL, setLargeImageURL] = useState('');
 
   useEffect(() => {
-    if (!name) {
+    if (!text) {
       return;
     }
-  
+
+    setStatus(Status.PENDING);
+
     imagesAPI
-    .fetchImages(text, page)
+      .fetchImages(text, page)
       .then(images => {
-        setImages(prevImg =>  ([...prevImg.images, ...images.hits]));
+        setImages(prevState => [...prevState, ...images.hits]);
         setStatus(Status.RESOLVED);
         if (page !== 1) {
           window.scrollTo({
@@ -48,12 +50,9 @@ export default function App({name}) {
         setError(error);
         setStatus(Status.REJECTED);
       });
-  
- }, [text]);
-    const handleFormSubmit = text => {
-    if (text) {
-      return;
-    }
+  }, [page, text]);
+
+  const handleFormSubmit = text => {
     setText(text);
     setImages([]);
     setPage(1);
@@ -66,7 +65,7 @@ export default function App({name}) {
     setShowModal(!showModal);
   };
   const btnFetch = () => {
-    setPage(+1);
+    setPage(prevState => prevState + 1);
   };
   // const resolvedImg = status === Status.RESOLVED && images.length > 11;
   return (

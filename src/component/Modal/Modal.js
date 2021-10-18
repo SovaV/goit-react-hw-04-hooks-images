@@ -1,10 +1,8 @@
-import {  useEffect } from 'react';
-// import PropTypes from 'prop-types';
+import { useEffect } from 'react';
 import m from '../Modal/Modal.module.css';
-// import ModalItem from './ModalItem';
 
-export default function Modal({onClose,largeImageURL }) {
- useEffect(() => {
+export default function Modal({ onClose, largeImageURL }) {
+  useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
@@ -16,18 +14,18 @@ export default function Modal({onClose,largeImageURL }) {
       onClose();
     }
   };
-const handleKeyClick = e => {
+  const handleKeyClick = e => {
     if (e.currentTarget === e.target) {
       onClose();
     }
   };
-   return (
-      <div className={m.Overlay} onClick={handleKeyClick}>
-        <div className={m.Modal}>
-          <img src={largeImageURL} alt="" />
-        </div>
+  return (
+    <div className={m.Overlay} onClick={handleKeyClick}>
+      <div className={m.Modal}>
+        <img src={largeImageURL} alt="" />
       </div>
-    );
+    </div>
+  );
 }
 
 // export default class Modal extends Component {

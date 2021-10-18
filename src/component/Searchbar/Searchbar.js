@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-// import PropTypes from 'prop-types';
 import s from './Searchbar.module.css';
 
 export default function Searchbar({ onSubmit }) {
@@ -12,7 +11,7 @@ export default function Searchbar({ onSubmit }) {
 
     if (text.trim() === '') {
       alert('Введите имя картинки');
-      return
+      return;
     }
     onSubmit(text);
     setText('');
